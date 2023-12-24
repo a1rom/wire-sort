@@ -10,7 +10,7 @@
     
     @livewireStyles
     
-    <title>{{ env('APP_NAME') }}}</title>
+    <title>{{ env('APP_NAME') }}</title>
 </head>
 
 <body>
