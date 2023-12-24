@@ -18,3 +18,6 @@ Route::get('/', function () {
         'message' => 'Welcome WireSort',
     ]);
 });
+
+Route::get('products', [App\Http\Controllers\ProductController::class, 'index'])
+    ->name('products.index');
