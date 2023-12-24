@@ -4,22 +4,28 @@ namespace App\Livewire\Product;
 
 use App\Models\Product;
 use Livewire\Component;
+use Illuminate\View\View;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
 
-    public $showPerPage = 5;
+    public int $showPerPage = 5;
 
+    /**
+     * @var array<string, string>
+     */
     public array $filters = [
         'producer' => '',
         'inStock' => '',
     ];
 
-    public function render()
+    public function render() : View
     {
-        return view('livewire.product.index');
+        return view('livewire.product.index', [
+            'products' => $this->getProducts(),
+        ]);
     }
 
     public function paginationView() : string
@@ -27,7 +33,10 @@ class Index extends Component
         return 'components.pagination';
     }
 
-    private function getProducts()
+    /**
+     * @return \Illuminate\Pagination\LengthAwarePaginator<Product>
+     */
+    private function getProducts() : \Illuminate\Pagination\LengthAwarePaginator
     {
         return Product::with('producer')
             ->latest()
