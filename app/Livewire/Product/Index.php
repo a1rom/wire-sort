@@ -73,6 +73,12 @@ class Index extends Component
 
     public function makeSearch() : void
     {
+        if($this->showPerPage >= 100) {
+            $this->showPerPage = 100;
+
+            session()->flash('error', 'You can not show more than 100 products per page.');
+        }
+
         $this->resetPage();
     }
 }

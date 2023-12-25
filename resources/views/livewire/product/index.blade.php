@@ -18,6 +18,12 @@
         </x-alert>
     @endif
 
+    @if(session('error'))
+        <x-alert type="danger">
+            {{ session('error') }}
+        </x-alert>
+    @endif
+
     {{-- Search input --}}
     <div class="flex flex-col gap-y-1">
         <div class="grid grid-cols-12 gap-2">
