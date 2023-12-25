@@ -70,7 +70,7 @@
                 value="{{ $value }}"  
             @endif
             @if ($wiremodel)
-                wire:model.blur="{{ $wiremodel }}"
+                wire:model="{{ $wiremodel }}"
             @endif
             @if ($wiremodelDebounce)
                 wire:model.live.debounce.500ms="{{ $wiremodelDebounce }}"

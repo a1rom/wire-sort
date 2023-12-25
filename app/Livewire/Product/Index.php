@@ -18,7 +18,7 @@ class Index extends Component
      */
     public array $filters = [
         'producer' => '',
-        'inStock' => '',
+        'inStock' => '-1',
     ];
 
     public function render() : View
@@ -36,10 +36,49 @@ class Index extends Component
     /**
      * @return \Illuminate\Pagination\LengthAwarePaginator<Product>
      */
-    private function getProducts() : \Illuminate\Pagination\LengthAwarePaginator
+    private function getProducts(bool $all = false) : \Illuminate\Pagination\LengthAwarePaginator
     {
+        if($all) {
+            return Product::with('producer')
+                ->latest()
+                ->paginate($this->showPerPage);
+        }
+
         return Product::with('producer')
+            ->when($this->filters['producer'], function($query, $producer) {
+                $query->whereHas('producer', function($query) use ($producer) {
+                    $query->where('name', 'like', "%{$producer}%");
+                });
+            })
+            ->when($this->filters['inStock'] !== '-1', function($query) {
+                $query->when($this->filters['inStock'] === '1', function($query) {
+                    $query->where('stock', '>', 0);
+                });
+
+                $query->when($this->filters['inStock'] === '0', function($query) {
+                    $query->where('stock', '=', 0);
+                });
+            })
             ->latest()
             ->paginate($this->showPerPage);
+    }
+
+    public function clearSearch() : void
+    {
+        $this->filters = [
+            'producer' => '',
+            'inStock' => '-1',
+        ];
+    }
+
+    public function makeSearch() : void
+    {
+        if($this->showPerPage >= 100) {
+            $this->showPerPage = 100;
+
+            session()->flash('error', 'You can not show more than 100 products per page.');
+        }
+
+        $this->resetPage();
     }
 }
